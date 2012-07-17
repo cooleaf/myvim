@@ -1,0 +1,58 @@
+//this is demo code for device management.
+//
+#include <iostream>
+#include "soapStub.h"
+#include "soapDeviceBindingProxy.h"
+#include "DeviceBinding.nsmap"
+
+using namespace std;
+
+const char* server = "http://159.99.249.221/onvif/device_service";
+
+int main(int argc, char* argv[])
+{
+
+    DeviceBindingProxy dbp;
+    dbp.soap_endpoint = server;
+    _ns1__GetCapabilities caps;
+    ns2__CapabilityCategory c = ns2__CapabilityCategory__All;
+    caps.Category.push_back(c);
+    _ns1__GetCapabilitiesResponse *response = new _ns1__GetCapabilitiesResponse();
+    int nRet = dbp.GetCapabilities(NULL, NULL, &caps, response);
+    adasfasdfasd 
+    cout << "GetCapabilities return " <<  nRet << endl;
+
+    if( nRet  != 0 )
+    {
+        cout << "GetCapabilities failed." << endl;
+        return 0;
+    }
+    
+    if (nRet < 0) 
+    {
+
+    }
+    /* 
+    _ns1__GetServices s;
+
+    _ns1__GetServicesResponse *r = new _ns1__GetServicesResponse();
+    
+    nRet = dbp.GetServices(NULL, NULL, &s, r);
+
+    cout << "GetCapabilities return " <<  nRet << endl;
+    delete r;
+
+    */
+
+    ns2__Capabilities *cs = response->Capabilities;
+   
+
+    ns2__MediaCapabilities *mc = cs->Media;
+
+    cout << "Media Service Addr: " << mc->XAddr << endl;
+    
+    delete response;
+    response = NULL;
+    return 0;
+
+}
