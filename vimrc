@@ -1,5 +1,5 @@
 " =================================================
-" vimrc from ghostylee <ghosty.lee.1984@gmail.com>
+" vimrc from  cooleaf@gmail.com
 " =================================================
 
 " ----------------------------------------
@@ -59,8 +59,8 @@ if has('win32') || has('win64')
 else
   "set guifont=YaHei\ Mono\ 11
   "set guifont=YaHei\ Consolas\ hybrid\ for\ Powerline\ 11
-  set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 11
-  set guifontwide=WenQuanYi\ Zen\ Hei\ Mono\ 11
+  set guifont=Couries\ New\ 12
+  set guifontwide=Couries\ New\ 12
 endif
 "}}}
 " UI {{{
@@ -104,10 +104,10 @@ set iskeyword+=$,@     " Add extra characters that are valid parts of variables
 "}}}
 " Text Format {{{
 " ---------------
-set tabstop=2
+set tabstop=4
 set backspace=2   " Delete everything with backspace
-set shiftwidth=2  " Tabs under smart indent
-set softtabstop=2 " backspace can delete 2 space a time
+set shiftwidth=4  " Tabs under smart indent
+set softtabstop=4 " backspace can delete 2 space a time
 set cindent
 set cinoptions={0,1s,t0,n-2,p2s,(03s,=.5s,1s:1s
 set autoindent
@@ -540,5 +540,11 @@ Bundle 'Raimondi/delimitMate'
 " ---------------
 Bundle 'sjl/gundo.vim'
 nnoremap au :GundoToggle<CR>
+"}}}
+" Python {{{
+" ---------------
+Bundle 'Python-Syntax'
+Bundle 'python.vim'
+Bundle 'pythoncomplete'
 "}}}
 "}}}
