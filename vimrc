@@ -547,4 +547,13 @@ Bundle 'Python-Syntax'
 Bundle 'python.vim'
 Bundle 'pythoncomplete'
 "}}}
+" jQuery {{{
+"  -------------
+Bundle 'jQuery'
+" }}}
+" javascript {{{
+" --------------
+Bundle 'JavaScript-syntax'
+"Bundle 'javascript.vim'
+" }}}
 "}}}
