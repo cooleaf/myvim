@@ -374,54 +374,22 @@ Bundle 'guns/xterm-color-table.vim'
 " ---------------
 Bundle 'xolox/vim-shell'
 "}}}
-" Neocachecompl {{{
-" ---------------
-Bundle 'Shougo/neocomplcache'
-Bundle 'Shougo/neocomplcache-snippets-complete'
-let g:neocomplcache_enable_at_startup=1
-let g:neocomplcache_enable_auto_select=0 "Select the first entry automatically
-let g:neocomplcache_enable_cursor_hold_i=1
-let g:neocomplcache_cursor_hold_i_time=300
-let g:neocomplcache_auto_completion_start_length=1
-
+" neosnippet{{{
+Bundle 'Shougo/neocomplcache.git'
+Bundle 'Shougo/neosnippet.git'
+" Plugin key-mappings.
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+"
 " SuperTab like snippets behavior.
-imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
-inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
+imap <expr><TAB> neosnippet#expandable() ? "\<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? "\<C-n>" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable() ? "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 
-" Enable omni completion.
-autocmd FileType c setlocal omnifunc=ccomplete#Complete
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-
-" Enable heavy omni completion.
-if !exists('g:neocomplcache_omni_patterns')
-  let g:neocomplcache_omni_patterns = {}
+" For snippet_complete marker.
+if has('conceal')
+  set conceallevel=2 concealcursor=i
 endif
-let g:neocomplcache_omni_patterns.c = '\%(\.\|->\)\h\w*'
-let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
 
-" Required to make neocomplcache_cursor_hold_i_time work
-" See https://github.com/Shougo/neocomplcache/issues/140
-let s:update_time_save = &updatetime
-autocmd InsertEnter * call s:on_insert_enter()
-
-function! s:on_insert_enter()
-  if &updatetime > g:neocomplcache_cursor_hold_i_time
-    let s:update_time_save = &updatetime
-    let &updatetime = g:neocomplcache_cursor_hold_i_time
-  endif
-endfunction
-
-autocmd InsertLeave * call s:on_insert_leave()
-
-function! s:on_insert_leave()
-  if &updatetime < s:update_time_save
-    let &updatetime = s:update_time_save
-  endif
-endfunction
 "}}}
 " Syntastic {{{
 " ---------------
@@ -500,17 +468,6 @@ nnoremap <leader>u :CtrlPCurFile<CR>
 nnoremap <leader>m :CtrlPMRUFiles<CR>
 nnoremap <leader>b :CtrlPBuffer<CR>
 "}}}
-" Powerline {{{
-" ---------------
-Bundle 'Lokaltog/vim-powerline'
-" Keep ^B from showing on Windows in Powerline
-if has('win32') || has('win64')
-  let g:Powerline_symbols = 'fancy'
-elseif has('unix')
-  let g:Powerline_symbols = 'fancy'
-endif
-call Pl#Theme#InsertSegment('ws_marker', 'after', 'lineinfo')
-"}}}
 " easymotion {{{
 " ---------------
 Bundle 'Lokaltog/vim-easymotion'
@@ -520,7 +477,7 @@ Bundle 'Lokaltog/vim-easymotion'
 Bundle 'Rykka/colorv.vim'
 let g:colorv_has_python=0
 "}}}
-" quickfixsigns {{{
+" quickfixsigns {{{`
 " ---------------
 Bundle 'tomtom/quickfixsigns_vim'
 "}}}
