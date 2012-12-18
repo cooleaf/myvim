@@ -1,5 +1,5 @@
 " =================================================
-" vimrc from  cooleaf@gmail.com
+" vimrc from ghostylee <ghosty.lee.1984@gmail.com>
 " =================================================
 
 " ----------------------------------------
@@ -33,7 +33,6 @@ hi! link cssAttr Constant
 "}}}
 " Theme{{{
 set t_Co=256
-set background=dark
 colorscheme jellybeans
 "}}}
 "}}}
@@ -54,13 +53,13 @@ set langmenu=zh_CN.UTF-8  " chinese menu
 " Font {{{
 " ---------------
 if has('win32') || has('win64')
-  set guifont=DejaVu_Sans_Mono_for_Powerline:h11
-  set guifontwide=Yahei_Mono:h11:cGB2312
+  set guifont=DejaVu_Sans_Mono_for_Powerline:h10
+  set guifontwide=Yahei_Mono:h10:cGB2312
 else
   "set guifont=YaHei\ Mono\ 11
   "set guifont=YaHei\ Consolas\ hybrid\ for\ Powerline\ 11
-  set guifont=Couries\ New\ 12
-  set guifontwide=Couries\ New\ 12
+  set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 10
+  set guifontwide=WenQuanYi\ Zen\ Hei\ Mono\ 10
 endif
 "}}}
 " UI {{{
@@ -217,7 +216,13 @@ command W w
 command Q q
 command WQ wq
 command Wq wq
+" }}}
+
+" use ; for : {{{
+nnoremap ; :
+vnoremap ; :
 "}}}
+
 " Make line completion easier {{{
 imap <C-l> <C-x><C-l>
 "}}}
@@ -278,8 +283,8 @@ set keywordprg=":help"
 " Quickfix Commands {{{
 nnoremap ao :botright copen<cr>
 nnoremap ap :cclose<cr>
-nnoremap <C-Up> :cprev<cr>
-nnoremap <C-Down> :cnext<cr>
+nnoremap [q :cprev<cr>
+nnoremap ]q :cnext<cr>
 "}}}
 "}}}
 " ----------------------------------------
@@ -289,7 +294,7 @@ nnoremap <C-Down> :cnext<cr>
 " ---------------
 Bundle 'majutsushi/tagbar'
 let g:tagbar_width = 30
-nnoremap al :TagbarToggle<cr>
+nnoremap <leader>t :TagbarToggle<cr>
 "}}}
 " ctags {{{
 " ---------------
@@ -297,7 +302,7 @@ set tags=tags;,~/_vimtags  "; here let vim go to up folds until find one tags fi
 if has('win32') || has('win64')
   nnoremap ec :!start ctags -R --fields=+l --c-kinds=+pl --c++-kinds=+pl .<cr>
 else
-  nnoremap ec :!/bin/usr/local/ctags -R --fields=+l --c-kinds=+pl --c++-kinds=+pl .<cr>
+  nnoremap ec :!ctags -R --fields=+l --c-kinds=+pl --c++-kinds=+pl .<cr>
 endif
 "}}}
 " cscope {{{
@@ -309,25 +314,19 @@ if has('cscope')
   endif
   set csto=0
 
-  " auto load cscope.out file
-  set nocsverb
-  if filereadable("cscope.out")
-    cs add cscope.out
-  elseif filereadable("../cscope.out")
-    cs add ../cscope.out
-  elseif filereadable("../../cscope.out")
-    cs add ../../cscope.out
-  elseif filereadable("../../../cscope.out")
-    cs add ../../../cscope.out
-  elseif filereadable("../../../../cscope.out")
-    cs add ../../../../cscope.out
-  elseif filereadable("../../../../../cscope.out")
-    cs add ../../../../../cscope.out
-  elseif filereadable("../../../../../../cscope.out")
-    cs add ../../../../../../cscope.out
-  endif
-  set csverb
-
+  " auto load cscope.out file (TODO:not work in window now)
+  function! LoadCscope()
+    let db = findfile("cscope.out", ".;")
+    if (!empty(db))
+      echo db
+      let path = strpart(db, 0, match(db, "/cscope.out$"))
+      set nocscopeverbose " suppress 'duplicate connection' error
+      exe "cs add " . db . " " . path
+      set cscopeverbose
+    endif
+  endfunction
+  "au BufEnter /* call LoadCscope()
+autocmd FileType c,cpp call LoadCscope()
   " short command
   cnoreabbrev csa cs add
   cnoreabbrev csf cs find
@@ -374,22 +373,54 @@ Bundle 'guns/xterm-color-table.vim'
 " ---------------
 Bundle 'xolox/vim-shell'
 "}}}
-" neosnippet{{{
-Bundle 'Shougo/neocomplcache.git'
-Bundle 'Shougo/neosnippet.git'
-" Plugin key-mappings.
-imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-"
+" Neocachecompl {{{
+" ---------------
+Bundle 'Shougo/neocomplcache'
+Bundle 'Shougo/neocomplcache-snippets-complete'
+let g:neocomplcache_enable_at_startup=1
+let g:neocomplcache_enable_auto_select=0 "Select the first entry automatically
+let g:neocomplcache_enable_cursor_hold_i=1
+let g:neocomplcache_cursor_hold_i_time=300
+let g:neocomplcache_auto_completion_start_length=1
+
 " SuperTab like snippets behavior.
-imap <expr><TAB> neosnippet#expandable() ? "\<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? "\<C-n>" : "\<TAB>"
-smap <expr><TAB> neosnippet#expandable() ? "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
+inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
 
-" For snippet_complete marker.
-if has('conceal')
-  set conceallevel=2 concealcursor=i
+" Enable omni completion.
+autocmd FileType c setlocal omnifunc=ccomplete#Complete
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+" Enable heavy omni completion.
+if !exists('g:neocomplcache_omni_patterns')
+  let g:neocomplcache_omni_patterns = {}
 endif
+let g:neocomplcache_omni_patterns.c = '\%(\.\|->\)\h\w*'
+let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
 
+" Required to make neocomplcache_cursor_hold_i_time work
+" See https://github.com/Shougo/neocomplcache/issues/140
+let s:update_time_save = &updatetime
+autocmd InsertEnter * call s:on_insert_enter()
+
+function! s:on_insert_enter()
+  if &updatetime > g:neocomplcache_cursor_hold_i_time
+    let s:update_time_save = &updatetime
+    let &updatetime = g:neocomplcache_cursor_hold_i_time
+  endif
+endfunction
+
+autocmd InsertLeave * call s:on_insert_leave()
+
+function! s:on_insert_leave()
+  if &updatetime < s:update_time_save
+    let &updatetime = s:update_time_save
+  endif
+endfunction
 "}}}
 " Syntastic {{{
 " ---------------
@@ -403,12 +434,18 @@ nnoremap sc :SyntasticCheck<cr>
 " NERDTree {{{
 " ---------------
 Bundle 'scrooloose/nerdtree'
+let g:NERDTreeDirArrows=0
 nnoremap <leader>e :NERDTreeToggle<CR>
 "}}}
 " Indent Guides {{{
 " ---------------
 Bundle 'mutewinter/vim-indent-guides'
-let g:indent_guides_enable_on_vim_startup=1
+let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_start_level           = 2
+let g:indent_guides_guide_size            = 1
+let g:indent_guides_auto_colors = 0
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#003366 ctermbg=24
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#003366 ctermbg=24
 "}}}
 " Session {{{
 " ---------------
@@ -416,14 +453,6 @@ Bundle 'xolox/vim-session'
 let g:session_autosave=0
 let g:session_autoload=0
 nnoremap <leader>os :OpenSession<CR>
-"}}}
-" SpeedDating {{{
-" ---------------
-Bundle 'tpope/vim-speeddating'
-let g:speeddating_no_mappings=1 " Remove default mappings (C-a etc.)
-nmap <silent><leader>dm <Plug>SpeedDatingDown
-nmap <silent><leader>dp <Plug>SpeedDatingUp
-nmap <silent><leader>dn <Plug>SpeedDatingNowUTC
 "}}}
 " Tabular {{{
 " ---------------
@@ -457,27 +486,49 @@ nmap <Leader>gx :wincmd h<CR>:q<CR>
 " ctrlp.vim {{{
 " ---------------
 Bundle 'kien/ctrlp.vim'
-" Ensure Ctrl-P isn't bound by default
-let g:ctrlp_map = ''
-
+let g:ctrlp_map = '<leader>,'
+let g:ctrlp_cmd = 'CtrlP'
 " Ensure max height isn't too large. (for performance)
 let g:ctrlp_max_height = 10
 
-" Also map leader commands
-nnoremap <leader>u :CtrlPCurFile<CR>
-nnoremap <leader>m :CtrlPMRUFiles<CR>
-nnoremap <leader>b :CtrlPBuffer<CR>
+nmap <leader>. :CtrlPClearCache<cr>:CtrlP<cr>
+nmap <leader>l :CtrlPLine<cr>
+nmap <leader>b :CtrlPBuff<cr>
+nmap <leader>m :CtrlPBufTag<cr>
+nmap <leader>M :CtrlPBufTagAll<cr>
+let g:ctrlp_clear_cache_on_exit = 1
+" ctrlp leaves stale caches behind if there is another vim process runnin
+" which didn't use ctrlp. so we clear all caches on each new vim invocation
+cal ctrlp#clra()
+" jump to buffer in the same tab if already open
+let g:ctrlp_switch_buffer = 1
+" if in git repo - use git file listing command, should be faster
+let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files --exclude-standard -cod']
+
+" open multiple files with <c-z> to mark and <c-o> to open. v - opening in
+" vertical splits; j - jump to first open buffer; r - open first in current
+ buffer
+let g:ctrlp_open_multiple_files = 'vjr'
+
+let g:ctrlp_extensions = ['tag', 'buffertag', 'quickfix', 'mixed', 'line']
 "}}}
-" easymotion {{{
+" Powerline {{{
 " ---------------
-Bundle 'Lokaltog/vim-easymotion'
+Bundle 'Lokaltog/vim-powerline'
+" Keep ^B from showing on Windows in Powerline
+if has('win32') || has('win64')
+    let g:Powerline_symbols = 'fancy'
+elseif has('unix')
+    let g:Powerline_symbols = 'fancy'
+endif
+call Pl#Theme#InsertSegment('ws_marker', 'after', 'lineinfo')
 "}}}
 " colorv {{{
 " ---------------
 Bundle 'Rykka/colorv.vim'
 let g:colorv_has_python=0
 "}}}
-" quickfixsigns {{{`
+" quickfixsigns {{{
 " ---------------
 Bundle 'tomtom/quickfixsigns_vim'
 "}}}
@@ -498,19 +549,24 @@ Bundle 'Raimondi/delimitMate'
 Bundle 'sjl/gundo.vim'
 nnoremap au :GundoToggle<CR>
 "}}}
-" Python {{{
-" ---------------
-Bundle 'Python-Syntax'
-Bundle 'python.vim'
-Bundle 'pythoncomplete'
 "}}}
-" jQuery {{{
-"  -------------
-Bundle 'jQuery'
-" }}}
-" javascript {{{
-" --------------
-Bundle 'JavaScript-syntax'
-"Bundle 'javascript.vim'
-" }}}
+" ----------------------------------------
+" Syntax  {{{
+Bundle 'vim-ruby/vim-ruby'
+Bundle 'tsaleh/vim-tmux'
+Bundle 'Puppet-Syntax-Highlighting'
+Bundle 'JSON.vim'
+Bundle 'tpope/vim-cucumber'
+Bundle 'tpope/vim-haml'
+Bundle 'tpope/vim-markdown'
+Bundle 'kchmck/vim-coffee-script'
+Bundle 'vitaly/vim-syntastic-coffee'
+Bundle 'vim-scripts/jade.vim'
+Bundle 'wavded/vim-stylus'
+Bundle 'VimClojure'
+Bundle 'bbommarito/vim-slim'
+Bundle 'skammer/vim-css-color'
 "}}}
+" ----------------------------------------
+" transparent bg in vim
+hi Normal ctermbg=NONE
