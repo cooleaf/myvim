@@ -136,16 +136,18 @@ highlight SpecialKey guifg=#444444 guibg=NONE gui=NONE ctermfg=238 ctermbg=NONE 
 set cursorline
 
 if &term=="xterm"
+  let &t_SI = "\<Esc>]12;red\x7"
+  let &t_EI = "\<Esc>]12;grey80\x7"
   " solid underscore
-  let &t_SI .= "\<Esc>[3 q"
+  "let &t_SI .= "\<Esc>[3 q"
   " solid block
-  let &t_EI .= "\<Esc>[1 q"
+  "let &t_EI .= "\<Esc>[1 q"
   " 1 or 0 -> blinking block
   " 3 -> blinking underscore
   " change cursor shape in gnome-terminal
-  au InsertEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
-  au InsertLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
-  au VimLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
+  "au InsertEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
+  "au InsertLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
+  "au VimLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
 elseif &term=="rxvt-unicode-256color"
   " change cursor color in urxvt
   let &t_SI = "\<Esc>]12;red\x7"
@@ -375,8 +377,10 @@ Bundle 'xolox/vim-shell'
 "}}}
 " Neocachecompl {{{
 " ---------------
-Bundle 'Shougo/neocomplcache'
-Bundle 'Shougo/neocomplcache-snippets-complete'
+Bundle 'Shougo/neocomplcache.git'
+Bundle 'Shougo/neosnippet.git'
+"Bundle 'Shougo/neocomplcache'
+"Bundle 'Shougo/neocomplcache-snippets-complete'
 let g:neocomplcache_enable_at_startup=1
 let g:neocomplcache_enable_auto_select=0 "Select the first entry automatically
 let g:neocomplcache_enable_cursor_hold_i=1
