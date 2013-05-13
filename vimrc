@@ -132,12 +132,14 @@ set listchars=tab:▸\ ,trail:¬
 highlight NonText guifg=#444444 guibg=NONE gui=NONE ctermfg=238 ctermbg=NONE cterm=NONE
 highlight SpecialKey guifg=#444444 guibg=NONE gui=NONE ctermfg=238 ctermbg=NONE cterm=NONE
 
-"set cursorcolumn
+set cursorcolumn
 set cursorline
+hi cursorline ctermbg=64  
+hi cursorcolumn ctermbg=80  
 
 if &term=="xterm"
   let &t_SI = "\<Esc>]12;red\x7"
-  let &t_EI = "\<Esc>]12;grey80\x7"
+  let &t_EI = "\<Esc>]12;blue\x7"
   " solid underscore
   "let &t_SI .= "\<Esc>[3 q"
   " solid block
@@ -145,13 +147,13 @@ if &term=="xterm"
   " 1 or 0 -> blinking block
   " 3 -> blinking underscore
   " change cursor shape in gnome-terminal
-  "au InsertEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
-  "au InsertLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
-  "au VimLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
+  au InsertEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
+  au InsertLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
+  au VimLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
 elseif &term=="rxvt-unicode-256color"
   " change cursor color in urxvt
   let &t_SI = "\<Esc>]12;red\x7"
-  let &t_EI = "\<Esc>]12;grey80\x7"
+  let &t_EI = "\<Esc>]12;blue80\x7"
 endif
 "}}}
 " Sounds {{{
