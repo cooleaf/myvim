@@ -134,8 +134,8 @@ highlight SpecialKey guifg=#444444 guibg=NONE gui=NONE ctermfg=238 ctermbg=NONE 
 
 set cursorcolumn
 set cursorline
-hi cursorline ctermbg=64  
-hi cursorcolumn ctermbg=80  
+hi cursorline ctermbg=00  
+hi cursorcolumn ctermbg=00  
 
 if &term=="xterm"
   let &t_SI = "\<Esc>]12;red\x7"
@@ -370,17 +370,24 @@ hi cPreCondit guifg=#ff8700 guibg=NONE gui=NONE ctermfg=208 ctermbg=NONE cterm=N
 hi cTODO guifg=#ff0000 guibg=#dfff00 gui=NONE ctermfg=196 ctermbg=190 cterm=NONE
 "}}}
 "}}}
+
 " Xterm-color-table {{{
 Bundle 'guns/xterm-color-table.vim'
 "}}}
+
+"vim-misc{{{
+"---------------
+Bundle 'xolox/vim-misc'
+"}}}
+"
 " vim-shell {{{
 " ---------------
 Bundle 'xolox/vim-shell'
 "}}}
 " Neocachecompl {{{
 " ---------------
-Bundle 'Shougo/neocomplcache.git'
-Bundle 'Shougo/neosnippet.git'
+Bundle 'Shougo/neocomplcache'
+Bundle 'Shougo/neosnippet'
 "Bundle 'Shougo/neocomplcache'
 "Bundle 'Shougo/neocomplcache-snippets-complete'
 let g:neocomplcache_enable_at_startup=1
@@ -388,11 +395,23 @@ let g:neocomplcache_enable_auto_select=0 "Select the first entry automatically
 let g:neocomplcache_enable_cursor_hold_i=1
 let g:neocomplcache_cursor_hold_i_time=300
 let g:neocomplcache_auto_completion_start_length=1
-
-" SuperTab like snippets behavior.
-imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
-inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
-
+" Plugin key-mappings.
+ imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+ smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+ xmap <C-k>     <Plug>(neosnippet_expand_target)
+"
+" " SuperTab like snippets behavior.
+ imap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+ \ "\<Plug>(neosnippet_expand_or_jump)"
+ \: pumvisible() ? "\<C-n>" : "\<TAB>"
+ smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+ \ "\<Plug>(neosnippet_expand_or_jump)"
+ \: "\<TAB>"
+"
+" " For snippet_complete marker.
+ if has('conceal')
+   set conceallevel=2 concealcursor=i
+ endif
 " Enable omni completion.
 autocmd FileType c setlocal omnifunc=ccomplete#Complete
 autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
@@ -570,8 +589,9 @@ Bundle 'vitaly/vim-syntastic-coffee'
 Bundle 'vim-scripts/jade.vim'
 Bundle 'wavded/vim-stylus'
 Bundle 'VimClojure'
-Bundle 'bbommarito/vim-slim'
+Bundle 'slim-template/vim-slim'
 Bundle 'skammer/vim-css-color'
+Bundle 'node.js'
 "}}}
 " ----------------------------------------
 " transparent bg in vim
