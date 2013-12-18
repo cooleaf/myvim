@@ -7,7 +7,7 @@ cp ~/.vimrc ~/.vim && mv ~/.vim ~/.vim_old
 ```
 ####2. git clone
 ```
-git clone https://github.com/cooleaf/myVim.git ~/.vim
+git clone https://github.com/cooleaf/myvim.git ~/.vim
 ```
 ####3. create link to vimrc
 ```
